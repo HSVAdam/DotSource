@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # Set our varaibles
