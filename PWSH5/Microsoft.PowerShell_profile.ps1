@@ -2,6 +2,7 @@ Clear-Host
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # Determine if OneDrive exists to define start location
+$UserProfileFolder = $ENV:USERPROFILE
 IF ($OneDrive = Get-ChildItem -Path $UserProfileFolder | Where-Object { $_.Name -like 'OneDrive*'}) {
     Set-Location -Path (Join-Path -Path $OneDrive.FullName -ChildPath 'GiT')
 }
