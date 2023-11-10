@@ -1,42 +1,59 @@
 #Requires -RunAsAdministrator
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-# Set our varaibles
-$UserProfileFolder = $ENV:USERPROFILE
-$DocumentsFolder = [Environment]::GetFolderPath('MyDocuments')
-$PWSH5Root = Join-Path -Path $DocumentsFolder -ChildPath 'WindowsPowerShell'
-$PWSH7Root = Join-Path -Path $DocumentsFolder -ChildPath 'PowerShell'
-$VSCodeRoot = Join-Path -Path $UserProfileFolder -ChildPath 'AppData\Roaming\Code\User'
-
-Install-PackageProvider -Name NuGet -Force
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-
-# Ensure OhMyPosh is installed
-IF (!(Get-Command oh-my-posh.exe)) {
-    IF (Get-Command WinGet) {
-        & winget install JanDeDobbeleer.OhMyPosh -s winget
+# Check if profile already exists, if not lets get to building it
+IF (!(Test-Path -Path $PROFILE -PathType Leaf)) {
+    # Detect current PowerShell version and create profile folders
+    IF ($PSVersionTable.PSEdition -eq 'Core') {
+        New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory
     }
-    ELSE {
-        Write-Host 'Please install WinGet and re-run this script.'
-        BREAK;
+    IF ($PSVersionTable.PSEdition -eq 'Desktop') {
+        New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory
     }
-    Write-Host 'Oh-My-Posh is Installed.'
+
+    # Install modules from PSGallery
+    Install-PackageProvider -Name NuGet -Force
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+    Install-Module -Name Terminal-Icons -Scope CurrentUser -Repository PSGallery -Force
+    Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Repository PSGallery -Force
+
+    # Install OhMyPosh
+    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))
+
+    # Font Install
+    # Get all installed font families
+    [void] [System.Reflection.Assembly]::LoadWithPartialName('System.Drawing')
+    $FontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families
+    # Check if CaskaydiaCove NF is installed
+    IF ($FontFamilies -notcontains 'CaskaydiaCove NF') {
+
+        # Download and install CaskaydiaCove NF
+        $WebClient = New-Object System.Net.WebClient
+        $WebClient.DownloadFile('https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip', '.\CascadiaCode.zip')
+
+        Expand-Archive -Path '.\CascadiaCode.zip' -DestinationPath '.\CascadiaCode' -Force
+        $Destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
+        Get-ChildItem -Path '.\CascadiaCode' -Recurse -Filter '*.ttf' | ForEach-Object {
+            IF (-not(Test-Path "C:\Windows\Fonts\$($_.Name)")) {
+                # Install font
+                $Destination.CopyHere($_.FullName, 0x10)
+            }
+        }
+        # Clean up
+        Remove-Item -Path '.\CascadiaCode' -Recurse -Force
+        Remove-Item -Path '.\CascadiaCode.zip' -Force
+    }
+
+    # Lets begin downloading our dotSource files
+    # PowerShell 5
+    Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
+
+    #PowerShell Core
+    Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+
+    # Restart profile
+    . $PROFILE
 }
-
-# Install helpful modules
-Install-Module -Name Terminal-Icons -Force -AllowClobber
-Install-Module -Name 7Zip4PowerShell -Force -AllowClobber
-Write-Host 'Modules Installed.'
-
-# Lets begin downloading our dotSource files
-# PowerShell 5
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/PWSH5/Microsoft.PowerShell_profile.ps1' -OutFile "$PWSH5Root\Microsoft.PowerShell_profile.ps1"
-Write-Host 'PowerShell 5 Profile Downloaded'
-
-#PowerShell 7
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/PWSH7/Microsoft.PowerShell_profile.ps1' -OutFile "$PWSH7Root\Microsoft.PowerShell_profile.ps1"
-Write-Host 'PowerShell 7 Profile Downloaded'
-
-# VSCode
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/VSCode/settings.json' -OutFile "$VSCodeRoot\settings.json"
-Write-Host 'Visual Studio Code Profile Downloaded'
+ELSE {
+    Write-Host 'Profile already exists.'
+}
