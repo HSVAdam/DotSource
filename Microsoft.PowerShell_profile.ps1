@@ -5,7 +5,7 @@ FUNCTION Get-PublicIP {
  (Invoke-WebRequest http://ifconfig.me/ip ).Content
 }
 
-FUNCTIONS Get-Uptime {
+FUNCTION Get-Uptime {
     #Windows Powershell only
     If ($PSVersionTable.PSVersion.Major -eq 5 ) {
         Get-WmiObject win32_operatingsystem |
