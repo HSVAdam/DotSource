@@ -1,4 +1,3 @@
-#Requires -RunAsAdministrator
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 #region FUNCTIONS
