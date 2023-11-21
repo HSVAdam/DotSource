@@ -1,5 +1,4 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$ErrorActionPreference = 'SilentlyContinue'
 
 #region FUNCTIONS
 FUNCTION Get-PublicIP {
@@ -638,6 +637,8 @@ FUNCTION Get-DotNetFramework() {
 #endregion FUNCTIONS
 
 #region ALIASES
+$CurrentActionPrefeence = $ErrorActionPreference
+$ErrorActionPreference = 'SilentlyContinue'
 New-Alias -Name git -Value "$Env:ProgramFiles\Git\bin\git.exe"
 New-Alias -Name ngen -Value 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe'
 #endregion ALIASES
@@ -645,6 +646,7 @@ New-Alias -Name ngen -Value 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\nge
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+$ErrorActionPreference = $CurrentActionPrefeence
 
 Import-Module -Name Terminal-Icons
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\emodipt-extend.omp.json" | Invoke-Expression
