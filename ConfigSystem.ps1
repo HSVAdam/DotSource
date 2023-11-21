@@ -22,11 +22,11 @@ FUNCTION Set-MyProfile {
         TRY {
             # Profile File Setup based on PowerShell version running
             IF ($PSVersionTable.PSEdition -eq 'Core') {
-                IF (!(Test-Path -Path $PROFILE -PathType Leaf)) { $null = New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory }
+                IF (!(Test-Path -Path "$($env:USERPROFILE)\Documents\PowerShell")) { $null = New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory | Out-Null }
                 Invoke-WebRequest -Uri $PSCoreProfile -OutFile "$($env:USERPROFILE)\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
             }
             IF ($PSVersionTable.PSEdition -eq 'Desktop') {
-                IF (!(Test-Path -Path $PROFILE -PathType Leaf)) { $null = New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory }
+                IF (!(Test-Path -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell")) { $null = New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory | Out-Null }
                 Invoke-WebRequest -Uri $PS5Profile -OutFile "$($env:USERPROFILE)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
             }
 
