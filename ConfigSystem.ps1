@@ -6,9 +6,11 @@ IF (!(Test-Path -Path $PROFILE -PathType Leaf)) {
     # Detect current PowerShell version and create profile folders
     IF ($PSVersionTable.PSEdition -eq 'Core') {
         $null = New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory
+        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
     }
     IF ($PSVersionTable.PSEdition -eq 'Desktop') {
         $null = New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory
+        Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
     }
 }
 
@@ -44,14 +46,6 @@ IF ($FontFamilies -notcontains 'CaskaydiaCove NF') {
     Remove-Item -Path '.\CascadiaCode' -Recurse -Force
     Remove-Item -Path '.\CascadiaCode.zip' -Force
 }
-
-
-# Lets begin downloading our dotSource files
-# PowerShell 5
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
-
-#PowerShell Core
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1' -OutFile "$($env:USERPROFILE)\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
 
 # Restart profile
 . $PROFILE
