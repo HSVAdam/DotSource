@@ -57,6 +57,9 @@ PROCESS {
                     $Destination.CopyHere($_.FullName, 0x10)
                 }
             }
+            # Clean up
+            Remove-Item -Path '.\CascadiaCode' -Recurse -Force
+            Remove-Item -Path '.\CascadiaCode.zip' -Force
         }
     }
     CATCH {
@@ -65,10 +68,6 @@ PROCESS {
 }
 
 END {
-    # Clean up
-    Remove-Item -Path '.\CascadiaCode' -Recurse -Force
-    Remove-Item -Path '.\CascadiaCode.zip' -Force
-
     # Reload Profile
     . $PROFILE
 }

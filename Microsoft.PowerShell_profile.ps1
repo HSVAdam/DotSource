@@ -1,4 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$ErrorActionPreference = 'SilentlyContinue'
 
 #region FUNCTIONS
 FUNCTION Get-PublicIP {
