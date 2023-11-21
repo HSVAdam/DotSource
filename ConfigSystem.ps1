@@ -5,10 +5,10 @@
 IF (!(Test-Path -Path $PROFILE -PathType Leaf)) {
     # Detect current PowerShell version and create profile folders
     IF ($PSVersionTable.PSEdition -eq 'Core') {
-        New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory
+        $null = New-Item -Path "$($env:USERPROFILE)\Documents\PowerShell" -ItemType Directory
     }
     IF ($PSVersionTable.PSEdition -eq 'Desktop') {
-        New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory
+        $null = New-Item -Path "$($env:USERPROFILE)\Documents\WindowsPowerShell" -ItemType Directory
     }
 }
 
