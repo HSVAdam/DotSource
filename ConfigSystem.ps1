@@ -6,7 +6,7 @@ FUNCTION Set-MyProfile {
         [Parameter(Mandatory = $false)]
         [uri]$PSCoreProfile = 'https://raw.githubusercontent.com/HSVAdam/DotSource/main/Microsoft.PowerShell_profile.ps1',
         [Parameter(Mandatory = $false)]
-        [uri]$FontPack = 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip',
+        [url]$FontPack = 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip',
         [Parameter(Mandatory = $false)]
         [string]$PSRepository = 'PSGallery',
         [Parameter(Mandatory = $false)]
@@ -44,11 +44,11 @@ FUNCTION Set-MyProfile {
             [void] [System.Reflection.Assembly]::LoadWithPartialName('System.Drawing')
             $FontFamilies = (New-Object System.Drawing.Text.InstalledFontCollection).Families
             # Check if Cascadia Mono is installed
-            IF ($FontFamilies -notcontains 'Cascadia Mono') {
+            IF ($FontFamilies -notcontains 'CaskaydiaCove NFM') {
 
                 # Download and install Cascadia Mono
                 $WebClient = New-Object System.Net.WebClient
-                $WebClient.DownloadFile($FontPack, '.\CascadiaCode.zip')
+                $WebClient.DownloadFile($FontPack.AbsoluteUri, '.\CascadiaCode.zip')
 
                 Expand-Archive -Path '.\CascadiaCode.zip' -DestinationPath '.\CascadiaCode' -Force
                 $Destination = (New-Object -ComObject Shell.Application).Namespace(0x14)
